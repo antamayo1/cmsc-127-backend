@@ -17,15 +17,21 @@ const bcrypt = require("bcrypt");
 router.put("/editStatus", authenticateToken, async (req, res) => {
   try {
     const { studentID, newStatus } = req.body;
-    console.log({
+    await axios.put("https://sais-project.vercel.app/api/student/editStatus", {
       studentId: studentID,
       newStatus: newStatus
     });
-    const response = await axios.put("https://sais-project.vercel.app/api/student/editStatus", {
-      studentId: studentID,
-      newStatus: newStatus
-    });
-    return res.json({success: true, response});
+    return res.json({success: true});
+  } catch (err) {
+    console.error("Error fetching details: ", err);
+    res.status(500).send("Error fetching details.");
+  }
+});
+
+router.get("/getEnrolled", async (req, res) => {
+  try {
+    const enrolled = await axios.get("https://sais-project.vercel.app/api/enrollment/getAllEnrolled");
+    return res.json(enrolled.data);
   } catch (err) {
     console.error("Error fetching details: ", err);
     res.status(500).send("Error fetching details.");
